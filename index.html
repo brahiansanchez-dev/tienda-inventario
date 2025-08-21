@@ -6,22 +6,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root {
-      --main-dark: #23232a;
-      --main-light: #fff;
-      --main-accent: #cf9f57;
-      --main-accent-dark: #b98e45;
-      --main-grey: #444;
-      --main-grey-light: #e6e6e6;
+      --dark: #23232a;
+      --light: #fff;
+      --accent: #cf9f57;
+      --accent-dark: #b98e45;
+      --grey: #444;
+      --grey-light: #e6e6e6;
+      --card-shadow: 0 2px 14px #23232a22;
     }
     body {
       font-family: 'Trebuchet MS', Arial, sans-serif;
-      background: var(--main-grey-light);
+      background: var(--grey-light);
       margin: 0;
-      color: var(--main-grey);
+      color: var(--grey);
       min-height: 100vh;
     }
     .nav-bar {
-      background: var(--main-dark);
+      background: var(--dark);
       box-shadow: 0 1px 16px #0002;
       display: flex;
       justify-content: center;
@@ -38,7 +39,7 @@
       padding: 14px 0;
     }
     .nav-menu a {
-      color: var(--main-accent);
+      color: var(--accent);
       font-weight: bold;
       text-decoration: none;
       font-size: 1.2em;
@@ -49,17 +50,13 @@
     }
     .nav-menu a.active,
     .nav-menu a:hover {
-      color: var(--main-accent-dark);
+      color: var(--accent-dark);
       text-decoration: underline;
     }
-    .section {
-      display: none;
-      padding: 0;
-      margin: 0;
-    }
+    .section { display: none; padding: 0; margin: 0; }
     .section.active { display: block; }
     .container {
-      max-width: 1120px;
+      max-width: 1200px;
       margin: auto;
       padding: 32px 10px 24px 10px;
     }
@@ -83,7 +80,7 @@
       object-fit: cover;
       border-radius: 18px;
       box-shadow: 0 4px 28px #2222;
-      border: 4px solid var(--main-accent);
+      border: 4px solid var(--accent);
       transition: transform .2s;
     }
     .hero-img:hover {
@@ -99,8 +96,8 @@
     .hero-phrase {
       font-size: 1.6em;
       font-weight: bold;
-      color: var(--main-dark);
-      background: var(--main-accent);
+      color: var(--dark);
+      background: var(--accent);
       padding: 12px 32px;
       border-radius: 12px;
       box-shadow: 0 2px 14px #b98e4540;
@@ -109,7 +106,7 @@
     }
     h1 {
       text-align: center;
-      color: var(--main-accent-dark);
+      color: var(--accent-dark);
       font-size: 2.3em;
       margin-bottom: 12px;
       letter-spacing: 1px;
@@ -130,82 +127,104 @@
       outline: none;
       min-width: 140px;
       max-width: 340px;
-      background: var(--main-light);
-      color: var(--main-dark);
+      background: var(--light);
+      color: var(--dark);
       margin-left: 6px;
     }
     .controls label {
       font-weight: bold;
       color: #888;
     }
-    .product-list {
+    .catalog-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 24px;
+      gap: 30px;
       justify-content: center;
       min-height: 180px;
     }
-    .product-card {
-      background: var(--main-light);
-      border-radius: 10px;
-      box-shadow: 0 2px 14px #e0e0e0;
-      padding: 18px;
-      width: 255px;
-      cursor: pointer;
-      transition: box-shadow .2s;
-      position: relative;
+    .catalog-card {
+      background: var(--light);
+      border-radius: 14px;
+      box-shadow: var(--card-shadow);
+      padding: 18px 14px 18px 14px;
+      width: 320px;
+      max-width: 97vw;
+      min-height: 340px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: box-shadow .2s;
+      position: relative;
     }
-    .product-card:hover {
+    .catalog-card:hover {
       box-shadow: 0 4px 24px #cf9f5755;
     }
-    .product-img {
-      width: 100%;
-      max-width: 180px;
-      max-height: 180px;
+    .catalog-img {
+      width: 220px;
+      height: 150px;
       object-fit: contain;
       border-radius: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       background: #fafafa;
       border: 1px solid #efefef;
+      box-shadow: 0 2px 8px #23232a13;
     }
-    .product-ref {
-      font-size: 1.13em;
+    .catalog-ref {
+      font-size: 1.18em;
       font-weight: bold;
       margin-bottom: 7px;
-      color: var(--main-accent-dark);
+      color: var(--accent-dark);
       text-align: center;
     }
-    .product-price {
-      color: var(--main-accent);
+    .catalog-price {
+      color: var(--accent);
       font-weight: bold;
-      margin-bottom: 6px;
-      font-size: 1.02em;
+      margin-bottom: 8px;
+      font-size: 1.04em;
       text-align: center;
     }
-    .product-qty {
+    .catalog-tallas {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .talla-list {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .talla-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f7f7f7;
+      border-radius: 7px;
+      padding: 7px 10px;
+      font-size: 1em;
+      color: #222;
+      gap: 10px;
+    }
+    .talla-label {
+      font-weight: bold;
+      color: var(--dark);
+    }
+    .talla-stock {
       color: #888;
-      margin-bottom: 6px;
       font-size: .98em;
-      text-align: center;
-    }
-    .product-talla {
-      color: var(--main-dark);
-      font-size: .99em;
-      margin-bottom: 4px;
-      text-align: center;
+      margin-left: 7px;
     }
     .add-cart-btn {
-      background: var(--main-accent-dark);
+      background: var(--accent-dark);
       color: #fff;
       border: none;
       border-radius: 6px;
-      padding: 7px 14px;
+      padding: 6px 13px;
       cursor: pointer;
       font-size: .97em;
-      margin-top: 12px;
+      margin-left: 8px;
       font-family: 'Trebuchet MS', Arial, sans-serif;
       transition: background .2s;
     }
@@ -214,11 +233,33 @@
       color: #fff;
       cursor: not-allowed;
     }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 28px 0 14px 0;
+      align-items: center;
+    }
+    .pagination button {
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--accent-dark);
+      background: var(--light);
+      color: var(--accent-dark);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background .2s, color .2s;
+    }
+    .pagination button.active, .pagination button:hover {
+      background: var(--accent-dark);
+      color: #fff;
+    }
     .cart-btn {
       position: fixed;
       top: 22px;
       right: 38px;
-      background: var(--main-accent-dark);
+      background: var(--accent-dark);
       color: #fff;
       border: none;
       border-radius: 50%;
@@ -234,7 +275,7 @@
       position: absolute;
       top: -7px;
       right: -7px;
-      background: var(--main-dark);
+      background: var(--dark);
       color: #fff;
       border-radius: 50%;
       font-size: .86em;
@@ -244,28 +285,6 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-    }
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 28px 0 14px 0;
-      align-items: center;
-    }
-    .pagination button {
-      padding: 7px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--main-accent-dark);
-      background: var(--main-light);
-      color: var(--main-accent-dark);
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background .2s, color .2s;
-    }
-    .pagination button.active, .pagination button:hover {
-      background: var(--main-accent-dark);
-      color: #fff;
     }
     /* Modal carrito */
     .modal-bg {
@@ -279,7 +298,7 @@
       justify-content: center;
     }
     .cart-modal {
-      background: var(--main-light);
+      background: var(--light);
       border-radius: 12px;
       padding: 30px 26px 20px 26px;
       min-width: 320px;
@@ -288,7 +307,7 @@
       position: relative;
     }
     .cart-title {
-      color: var(--main-accent-dark);
+      color: var(--accent-dark);
       font-size: 1.5em;
       font-weight: bold;
       margin-bottom: 18px;
@@ -311,7 +330,7 @@
       color: #222;
     }
     .cart-ref {
-      color: var(--main-accent-dark);
+      color: var(--accent-dark);
       font-weight: bold;
       font-size: 1.08em;
     }
@@ -335,7 +354,7 @@
       margin-left: 12px;
       transition: background .2s;
     }
-    .cart-remove-btn:hover { background: var(--main-accent-dark);}
+    .cart-remove-btn:hover { background: var(--accent-dark);}
     .cart-total {
       color: #222;
       font-size: 1.13em;
@@ -347,7 +366,7 @@
       text-align: center;
     }
     .cart-buy-btn {
-      background: var(--main-accent-dark);
+      background: var(--accent-dark);
       color: #fff;
       border: none;
       border-radius: 7px;
@@ -374,10 +393,10 @@
       cursor: pointer;
       transition: color .2s;
     }
-    .cart-close-btn:hover { color: var(--main-accent-dark);}
+    .cart-close-btn:hover { color: var(--accent-dark);}
     /* Contacto */
     .contact-card {
-      background: var(--main-light);
+      background: var(--light);
       border-radius: 14px;
       box-shadow: 0 2px 16px #23232a20;
       max-width: 440px;
@@ -390,13 +409,13 @@
     }
     .contact-title {
       font-size: 1.3em;
-      color: var(--main-accent-dark);
+      color: var(--accent-dark);
       font-weight: bold;
       text-align: center;
       margin-bottom: 12px;
     }
     .contact-info {
-      color: var(--main-dark);
+      color: var(--dark);
       font-size: 1.15em;
       margin-bottom: 6px;
       text-align: center;
@@ -419,7 +438,7 @@
       .nav-menu { gap: 14px; font-size: .99em;}
       .hero-gallery { gap: 12px;}
       .hero-img { width: 98vw; max-width: 98vw; height: 170px;}
-      .product-card { width: 96vw; max-width: 96vw; }
+      .catalog-card { width: 99vw; max-width: 99vw; }
       .cart-modal { padding: 16px 5vw; }
       .controls { flex-direction: column; gap: 12px; align-items: stretch;}
     }
@@ -451,16 +470,14 @@
     </div>
   </section>
 
-  <!-- CATÁLOGO -->
+  <!-- CATÁLOGO agrupado por referencia -->
   <section class="section" id="catalogo">
     <div class="container">
       <h1>Catálogo</h1>
       <div class="controls">
-        <label for="buscador">Buscar referencia:</label>
-        <input type="text" id="buscador" placeholder="Ej: Adidas, Spiderman, etc">
-        <label for="talla-filter">Filtrar talla:</label>
-        <select id="talla-filter"><option value="">Todas</option></select>
-        <label><input type="checkbox" id="stock-filter" checked> Solo disponibles</label>
+        <label for="buscador">Buscar referencia/talla:</label>
+        <input type="text" id="buscador" placeholder="Ej: Adidas, 41, Spiderman, etc">
+        <label for="stock-filter"><input type="checkbox" id="stock-filter" checked> Solo disponibles</label>
         <label for="perpage">Por página: </label>
         <select id="perpage">
           <option value="12">12</option>
@@ -469,7 +486,7 @@
           <option value="60">60</option>
         </select>
       </div>
-      <div id="products" class="product-list"></div>
+      <div id="catalog-list" class="catalog-list"></div>
       <div id="pagination" class="pagination"></div>
     </div>
   </section>
@@ -481,7 +498,7 @@
       <div class="contact-card">
         <div class="contact-title">Contáctanos</div>
         <div class="contact-info">Andres Ruiz</div>
-        <div class="contact-info">Teléfono: <a href="tel:3016846018" style="color:var(--main-accent-dark); text-decoration:none;">3016846018</a></div>
+        <div class="contact-info">Teléfono: <a href="tel:3016846018" style="color:var(--accent-dark); text-decoration:none;">3016846018</a></div>
         <div class="contact-whatsapp">
           <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:28px;height:28px;">
           <a href="https://wa.me/573016846018" target="_blank">Escríbenos por WhatsApp</a>
@@ -506,33 +523,29 @@
       }
       window.scrollTo(0,0);
     }
-    // Navegación por hash
     window.addEventListener('hashchange', function() {
       const hash = window.location.hash.replace('#','');
       if (['inicio','catalogo','contacto'].includes(hash)) {
         setActiveSection(hash);
       }
     });
-    // Al iniciar
     document.addEventListener('DOMContentLoaded', function() {
       const hash = window.location.hash.replace('#','');
       setActiveSection(['inicio','catalogo','contacto'].includes(hash)?hash:'inicio');
     });
 
-    // El endpoint de tu Google Sheets
+    // Datos y funciones de inventario agrupado
     const SHEET_JSON_URL = 'https://docs.google.com/spreadsheets/d/1qqZ3JCCaaCnLYnXsVDHXdKOaoqZMX5iB1YZEQ8s15Jk/gviz/tq?tqx=out:json&gid=1579516686';
     const WHATSAPP_NUMBER = '573016846018';
 
-    let products = [];
+    let productsRaw = [];
+    let catalogGrouped = [];
     let cart = [];
-    let tallasSet = new Set();
 
-    // PAGINACIÓN
     let currentPage = 1;
     let perPage = 12;
-    let filteredProducts = [];
+    let filteredCatalog = [];
 
-    // Utilidades
     function toNumber(str) {
       if (!str) return 0;
       if (typeof str === 'number') return str;
@@ -544,8 +557,34 @@
       return parseFloat((str+"").replace(/[^0-9\.]/g, "")) || 0;
     }
 
-    // Carga productos del Sheet
-    async function loadProducts() {
+    // Agrupa productos por referencia
+    function groupCatalog(products) {
+      let map = new Map();
+      products.forEach(prod => {
+        let ref = prod.ref || '';
+        if (!map.has(ref)) {
+          map.set(ref, {
+            ref,
+            img: prod.img,
+            prices: [],
+            tallas: []
+          });
+        }
+        let group = map.get(ref);
+        // Usar la primera imagen encontrada por referencia
+        if (!group.img && prod.img) group.img = prod.img;
+        group.prices.push(toPrice(prod.price));
+        group.tallas.push({
+          talla: prod.talla,
+          qty: prod.qty,
+          price: prod.price
+        });
+      });
+      return Array.from(map.values());
+    }
+
+    // Carga productos del Sheet y agrupa
+    async function loadCatalog() {
       let res = await fetch(SHEET_JSON_URL);
       let text = await res.text();
       let json = JSON.parse(text.substr(47).slice(0, -2));
@@ -558,82 +597,86 @@
         return obj;
       });
 
-      products = rows.map(prod => {
-        // Columnas clave según tu Sheet
-        return {
-          ref: prod['Referencia'] || '',
-          talla: prod['Talla'] || '',
-          qty: toNumber(prod['Cantidad actual']),
-          img: (prod['Imagen URL'] || '').trim(),
-          price: (prod['Precio'] || '').replace(/\$/g,'').replace('.','').replace(',','').trim(),
-        };
-      });
+      productsRaw = rows.map(prod => ({
+        ref: prod['Referencia'] || '',
+        talla: prod['Talla'] || '',
+        qty: toNumber(prod['Cantidad actual']),
+        img: (prod['Imagen URL'] || '').trim(),
+        price: (prod['Precio'] || '').replace(/\$/g,'').replace('.','').replace(',','').trim(),
+      }));
 
-      // Generar set de tallas únicas para filtro
-      tallasSet = new Set(products.map(p=>p.talla).filter(t=>t));
-      renderTallaFilter();
-      applyFilters(); // inicial
+      catalogGrouped = groupCatalog(productsRaw);
+      applyFilters();
     }
 
-    // Renderiza filtro de tallas
-    function renderTallaFilter() {
-      const select = document.getElementById('talla-filter');
-      select.innerHTML = '<option value="">Todas</option>' +
-        Array.from(tallasSet).sort((a,b)=>toNumber(a)-toNumber(b)).map(t =>
-          `<option value="${t}">${t}</option>`
-        ).join('');
-    }
-
-    // Aplica filtros y búsqueda
+    // Filtros y búsqueda
     function applyFilters() {
       const search = document.getElementById('buscador').value.trim().toLowerCase();
-      const talla = document.getElementById('talla-filter').value;
       const onlyStock = document.getElementById('stock-filter').checked;
       perPage = parseInt(document.getElementById('perpage').value,10) || 12;
 
-      filteredProducts = products.filter(prod => {
+      filteredCatalog = catalogGrouped.filter(group => {
         let ok = true;
-        if (search && !prod.ref.toLowerCase().includes(search)) ok = false;
-        if (talla && prod.talla != talla) ok = false;
-        if (onlyStock && prod.qty <= 0) ok = false;
+        // Filtro por referencia o talla
+        if (search) {
+          let refOk = group.ref.toLowerCase().includes(search);
+          let tallaOk = group.tallas.some(t => (t.talla+"").toLowerCase().includes(search));
+          ok = refOk || tallaOk;
+        }
+        // Filtro por solo disponibles
+        if (onlyStock) {
+          ok = ok && group.tallas.some(t => t.qty > 0);
+        }
         return ok;
       });
 
-      // Si no hay filtros/búsqueda, mostrar todos los productos paginados
-      if (!search && !talla && !onlyStock) {
-        filteredProducts = products.slice();
-      }
+      // Si no hay búsqueda ni filtro, mostrar todo
+      if (!search && !onlyStock) filteredCatalog = catalogGrouped.slice();
 
       currentPage = 1;
-      renderProducts();
+      renderCatalog();
       renderPagination();
     }
 
-    // Renderiza productos paginados
-    function renderProducts() {
+    // Renderiza catálogo agrupado por referencia
+    function renderCatalog() {
       const start = (currentPage-1)*perPage;
       const end = start+perPage;
       let html = '';
-      filteredProducts.slice(start,end).forEach((prod, idx) => {
+      filteredCatalog.slice(start,end).forEach(group => {
+        // precio min y max
+        let minP = Math.min(...group.prices.filter(p=>p));
+        let maxP = Math.max(...group.prices.filter(p=>p));
+        let precio = minP==maxP ? `$${minP}` : `$${minP} - $${maxP}`;
         html += `
-          <div class="product-card">
-            <img class="product-img" src="${prod.img}" alt="Imagen de ${prod.ref}" onerror="this.onerror=null;this.src='https://via.placeholder.com/150?text=Sin+Imagen';">
-            <div class="product-ref">${prod.ref}</div>
-            <div class="product-talla">Talla: ${prod.talla}</div>
-            <div class="product-price">Precio: $${prod.price}</div>
-            <div class="product-qty">Stock: ${prod.qty}</div>
-            <button class="add-cart-btn" ${prod.qty <= 0 ? 'disabled' : ''} onclick="addToCart('${prod.ref}', '${prod.talla}', ${prod.price}, '${prod.img}', event)">
-              Agregar al carrito
-            </button>
+          <div class="catalog-card">
+            <img class="catalog-img" src="${group.img}" alt="Imagen de ${group.ref}" onerror="this.onerror=null;this.src='https://via.placeholder.com/220x150?text=Sin+Imagen';">
+            <div class="catalog-ref">${group.ref}</div>
+            <div class="catalog-price">Precio: ${precio}</div>
+            <div class="catalog-tallas">
+              <ul class="talla-list">
+                ${group.tallas.map(t =>
+                  `<li class="talla-item">
+                    <span class="talla-label">Talla ${t.talla}</span>
+                    <span class="talla-stock">Stock: ${t.qty}</span>
+                    <span class="talla-stock" style="color:var(--accent-dark);">($${t.price})</span>
+                    <button class="add-cart-btn" ${t.qty<=0?'disabled':''}
+                      onclick="addToCart('${group.ref}', '${t.talla}', ${t.price}, '${group.img}', event)">
+                      Agregar
+                    </button>
+                  </li>`
+                ).join('')}
+              </ul>
+            </div>
           </div>
         `;
       });
-      document.getElementById('products').innerHTML = html || '<div style="color:#888;padding:36px;text-align:center;">No hay productos para mostrar.</div>';
+      document.getElementById('catalog-list').innerHTML = html || '<div style="color:#888;padding:36px;text-align:center;">No hay productos para mostrar.</div>';
     }
 
     // Renderiza paginación
     function renderPagination() {
-      const totalPages = Math.ceil(filteredProducts.length / perPage);
+      const totalPages = Math.ceil(filteredCatalog.length / perPage);
       if (totalPages <= 1) {
         document.getElementById('pagination').innerHTML = '';
         return;
@@ -644,10 +687,9 @@
       }
       document.getElementById('pagination').innerHTML = html;
     }
-
     window.gotoPage = function(page) {
       currentPage = page;
-      renderProducts();
+      renderCatalog();
       renderPagination();
     }
 
@@ -655,10 +697,11 @@
     window.addToCart = function(ref, talla, price, img, e) {
       e.stopPropagation();
       let idx = cart.findIndex(item => item.ref == ref && item.talla == talla);
-      let prod = products.find(p => p.ref == ref && p.talla == talla);
-      if (prod && prod.qty > 0) {
+      let group = catalogGrouped.find(g => g.ref == ref);
+      let tallaObj = group && group.tallas.find(t => t.talla == talla);
+      if (tallaObj && tallaObj.qty > 0) {
         if (idx >= 0) {
-          if (cart[idx].qty < prod.qty) {
+          if (cart[idx].qty < tallaObj.qty) {
             cart[idx].qty += 1;
           } else {
             alert('No hay más stock disponible para esta talla.');
@@ -731,13 +774,12 @@
       document.getElementById('modal-bg').innerHTML = '';
     };
 
-    // Eventos de filtros y búsqueda
+    // Filtros y búsqueda
     document.getElementById('buscador').addEventListener('input', applyFilters);
-    document.getElementById('talla-filter').addEventListener('change', applyFilters);
     document.getElementById('stock-filter').addEventListener('change', applyFilters);
     document.getElementById('perpage').addEventListener('change', applyFilters);
 
-    loadProducts();
+    loadCatalog();
   </script>
 </body>
 </html>
