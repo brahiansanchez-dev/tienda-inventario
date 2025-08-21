@@ -126,14 +126,14 @@
       box-shadow: 0 1px 8px #bfa76e22;
       transition: border .2s;
     }
-    .catalog-list {
+    .product-list {
       display: flex;
       flex-wrap: wrap;
       gap: 30px;
       justify-content: center;
       min-height: 180px;
     }
-    .catalog-card {
+    .product-card {
       background: var(--light);
       border-radius: 14px;
       box-shadow: var(--card-shadow);
@@ -147,10 +147,10 @@
       transition: box-shadow .2s;
       position: relative;
     }
-    .catalog-card:hover {
+    .product-card:hover {
       box-shadow: 0 4px 24px #bfa76e55;
     }
-    .catalog-img {
+    .product-img {
       width: 220px;
       height: 150px;
       object-fit: contain;
@@ -160,52 +160,31 @@
       border: 1px solid #efefef;
       box-shadow: 0 2px 8px #23232a13;
     }
-    .catalog-ref {
+    .product-ref {
       font-size: 1.18em;
       font-weight: bold;
       margin-bottom: 7px;
       color: var(--accent-dark);
       text-align: center;
     }
-    .catalog-price {
+    .product-price {
       color: var(--accent);
       font-weight: bold;
       margin-bottom: 8px;
       font-size: 1.04em;
       text-align: center;
     }
-    .catalog-tallas {
-      width: 100%;
-      margin-bottom: 8px;
-    }
-    .talla-list {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .talla-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #f7f7f7;
-      border-radius: 7px;
-      padding: 7px 10px;
-      font-size: 1em;
-      color: #222;
-      gap: 10px;
-    }
-    .talla-label {
-      font-weight: bold;
+    .product-talla {
       color: var(--dark);
+      font-size: 1.05em;
+      margin-bottom: 6px;
+      text-align: center;
     }
-    .talla-stock {
+    .product-qty {
       color: #888;
-      font-size: .98em;
-      margin-left: 7px;
+      font-size: .99em;
+      margin-bottom: 6px;
+      text-align: center;
     }
     .add-cart-btn {
       background: var(--accent-dark);
@@ -215,7 +194,7 @@
       padding: 6px 13px;
       cursor: pointer;
       font-size: .97em;
-      margin-left: 8px;
+      margin-top: 8px;
       font-family: 'Trebuchet MS', Arial, sans-serif;
       transition: background .2s;
     }
@@ -223,6 +202,28 @@
       background: #bbb;
       color: #fff;
       cursor: not-allowed;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 28px 0 14px 0;
+      align-items: center;
+    }
+    .pagination button {
+      padding: 7px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--accent-dark);
+      background: var(--light);
+      color: var(--accent-dark);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background .2s, color .2s;
+    }
+    .pagination button.active, .pagination button:hover {
+      background: var(--accent-dark);
+      color: #fff;
     }
     .cart-btn {
       position: fixed;
@@ -407,9 +408,8 @@
       .nav-menu { gap: 14px; font-size: .99em;}
       .hero-gallery { gap: 12px;}
       .hero-img { width: 99vw; max-width: 99vw; height: 170px;}
-      .catalog-card { width: 99vw; max-width: 99vw; }
+      .product-card { width: 99vw; max-width: 99vw; }
       .cart-modal { padding: 16px 5vw; }
-      .controls { flex-direction: column; gap: 12px; align-items: stretch;}
       .search-box input { min-width:140px; max-width:99vw;}
     }
   </style>
@@ -438,14 +438,22 @@
       </div>
     </div>
   </section>
-  <!-- CATÁLOGO agrupado por referencia -->
+  <!-- CATÁLOGO por producto -->
   <section class="section" id="catalogo">
     <div class="container">
       <h1>Catálogo</h1>
       <div class="search-box">
         <input type="text" id="search-name" placeholder="Buscar por nombre de referencia...">
+        <label for="perpage" style="margin-left:18px;color:#888;font-weight:bold;">Por página:</label>
+        <select id="perpage">
+          <option value="12">12</option>
+          <option value="24">24</option>
+          <option value="36">36</option>
+          <option value="60">60</option>
+        </select>
       </div>
-      <div id="catalog-list" class="catalog-list"></div>
+      <div id="product-list" class="product-list"></div>
+      <div id="pagination" class="pagination"></div>
     </div>
   </section>
   <!-- CONTACTO -->
@@ -490,13 +498,15 @@
       setActiveSection(['inicio','catalogo','contacto'].includes(hash)?hash:'inicio');
     });
 
-    // Inventario agrupado
+    // Inventario plano
     const SHEET_JSON_URL = 'https://docs.google.com/spreadsheets/d/1qqZ3JCCaaCnLYnXsVDHXdKOaoqZMX5iB1YZEQ8s15Jk/gviz/tq?tqx=out:json&gid=1579516686';
     const WHATSAPP_NUMBER = '573016846018';
 
     let productsRaw = [];
-    let catalogGrouped = [];
     let cart = [];
+    let currentPage = 1;
+    let perPage = 12;
+    let filteredProducts = [];
 
     function toNumber(str) {
       if (!str) return 0;
@@ -509,33 +519,7 @@
       return parseFloat((str+"").replace(/[^0-9\.]/g, "")) || 0;
     }
 
-    // Agrupa productos por referencia
-    function groupCatalog(products) {
-      let map = new Map();
-      products.forEach(prod => {
-        let ref = prod.ref || '';
-        if (!map.has(ref)) {
-          map.set(ref, {
-            ref,
-            img: prod.img,
-            prices: [],
-            tallas: []
-          });
-        }
-        let group = map.get(ref);
-        if (!group.img && prod.img) group.img = prod.img;
-        group.prices.push(toPrice(prod.price));
-        group.tallas.push({
-          talla: prod.talla,
-          qty: prod.qty,
-          price: prod.price
-        });
-      });
-      return Array.from(map.values());
-    }
-
-    // Carga productos del Sheet y agrupa
-    async function loadCatalog() {
+    async function loadProducts() {
       let res = await fetch(SHEET_JSON_URL);
       let text = await res.text();
       let json = JSON.parse(text.substr(47).slice(0, -2));
@@ -556,59 +540,72 @@
         price: (prod['Precio'] || '').replace(/\$/g,'').replace('.','').replace(',','').trim(),
       }));
 
-      catalogGrouped = groupCatalog(productsRaw);
-      renderCatalog(); // inicial
+      applyFilters(); // inicial
     }
 
-    // Renderiza catálogo agrupado por referencia
-    function renderCatalog(search = "") {
-      let filtered = catalogGrouped;
-      if(search && search.trim() !== "") {
-        let s = search.trim().toLowerCase();
-        filtered = catalogGrouped.filter(group =>
-          group.ref.toLowerCase().includes(s)
-        );
-      }
+    function applyFilters() {
+      const search = document.getElementById('search-name').value.trim().toLowerCase();
+      perPage = parseInt(document.getElementById('perpage').value,10) || 12;
+
+      filteredProducts = productsRaw.filter(prod => {
+        if (search) {
+          return prod.ref.toLowerCase().includes(search);
+        }
+        return true;
+      });
+
+      currentPage = 1;
+      renderProducts();
+      renderPagination();
+    }
+
+    function renderProducts() {
+      const start = (currentPage-1)*perPage;
+      const end = start+perPage;
       let html = '';
-      filtered.forEach(group => {
-        let minP = Math.min(...group.prices.filter(p=>p));
-        let maxP = Math.max(...group.prices.filter(p=>p));
-        let precio = minP==maxP ? `$${minP}` : `$${minP} - $${maxP}`;
+      filteredProducts.slice(start,end).forEach(prod => {
         html += `
-          <div class="catalog-card">
-            <img class="catalog-img" src="${group.img}" alt="Imagen de ${group.ref}" onerror="this.onerror=null;this.src='https://via.placeholder.com/220x150?text=Sin+Imagen';">
-            <div class="catalog-ref">${group.ref}</div>
-            <div class="catalog-price">Precio: ${precio}</div>
-            <div class="catalog-tallas">
-              <ul class="talla-list">
-                ${group.tallas.map(t =>
-                  `<li class="talla-item">
-                    <span class="talla-label">Talla ${t.talla}</span>
-                    <span class="talla-stock">Stock: ${t.qty}</span>
-                    <span class="talla-stock" style="color:var(--accent-dark);">($${t.price})</span>
-                    <button class="add-cart-btn" ${t.qty<=0?'disabled':''}
-                      onclick="addToCart('${group.ref}', '${t.talla}', ${t.price}, '${group.img}', event)">
-                      Agregar
-                    </button>
-                  </li>`
-                ).join('')}
-              </ul>
-            </div>
+          <div class="product-card">
+            <img class="product-img" src="${prod.img}" alt="Imagen de ${prod.ref}" onerror="this.onerror=null;this.src='https://via.placeholder.com/220x150?text=Sin+Imagen';">
+            <div class="product-ref">${prod.ref}</div>
+            <div class="product-talla">Talla: ${prod.talla}</div>
+            <div class="product-price">Precio: $${prod.price}</div>
+            <div class="product-qty">Stock: ${prod.qty}</div>
+            <button class="add-cart-btn" ${prod.qty<=0?'disabled':''}
+              onclick="addToCart('${prod.ref}', '${prod.talla}', ${prod.price}, '${prod.img}', event)">
+              Agregar al carrito
+            </button>
           </div>
         `;
       });
-      document.getElementById('catalog-list').innerHTML = html || '<div style="color:#888;padding:36px;text-align:center;">No hay productos para mostrar.</div>';
+      document.getElementById('product-list').innerHTML = html || '<div style="color:#888;padding:36px;text-align:center;">No hay productos para mostrar.</div>';
     }
 
-    // Carrito y lógica (igual que antes)
+    function renderPagination() {
+      const totalPages = Math.ceil(filteredProducts.length / perPage);
+      if (totalPages <= 1) {
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+      let html = '';
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button ${i==currentPage?'class="active"':''} onclick="gotoPage(${i})">${i}</button>`;
+      }
+      document.getElementById('pagination').innerHTML = html;
+    }
+    window.gotoPage = function(page) {
+      currentPage = page;
+      renderProducts();
+      renderPagination();
+    }
+
     window.addToCart = function(ref, talla, price, img, e) {
       e.stopPropagation();
       let idx = cart.findIndex(item => item.ref == ref && item.talla == talla);
-      let group = catalogGrouped.find(g => g.ref == ref);
-      let tallaObj = group && group.tallas.find(t => t.talla == talla);
-      if (tallaObj && tallaObj.qty > 0) {
+      let prod = productsRaw.find(p => p.ref == ref && p.talla == talla);
+      if (prod && prod.qty > 0) {
         if (idx >= 0) {
-          if (cart[idx].qty < tallaObj.qty) {
+          if (cart[idx].qty < prod.qty) {
             cart[idx].qty += 1;
           } else {
             alert('No hay más stock disponible para esta talla.');
@@ -681,12 +678,10 @@
       document.getElementById('modal-bg').innerHTML = '';
     };
 
-    // Search por nombre de referencia
-    document.getElementById('search-name').addEventListener('input', function(e){
-      renderCatalog(e.target.value);
-    });
+    document.getElementById('search-name').addEventListener('input', applyFilters);
+    document.getElementById('perpage').addEventListener('change', applyFilters);
 
-    loadCatalog();
+    loadProducts();
   </script>
 </body>
 </html>
