@@ -11,8 +11,34 @@
       margin: 0;
       color: #222;
     }
+    .nav-bar {
+      width: 100%;
+      background: #ff7f00;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+      box-shadow: 0 1px 8px #ff7f0035;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 30px;
+      padding: 14px 0;
+    }
+    .nav-menu a {
+      color: #fff;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 1.1em;
+      transition: color .2s;
+    }
+    .nav-menu a:hover {
+      color: #222;
+      text-decoration: underline;
+    }
     .container {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: auto;
       padding: 24px;
     }
@@ -286,11 +312,20 @@
       .container { padding: 8px; }
       .cart-modal { padding: 16px 5vw; }
       .controls { flex-direction: column; gap: 12px; align-items: stretch;}
+      .nav-menu { gap: 12px; font-size: .99em;}
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <nav class="nav-bar">
+    <div class="nav-menu">
+      <a href="#">Inicio</a>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#contacto">Contacto</a>
+      <a href="https://wa.me/573016846018" target="_blank">Whatsapp</a>
+    </div>
+  </nav>
+  <div class="container" id="catalogo">
     <h1>Tienda Online de Inventario</h1>
     <div class="controls">
       <label for="buscador">Buscar referencia:</label>
@@ -394,6 +429,11 @@
         if (onlyStock && prod.qty <= 0) ok = false;
         return ok;
       });
+
+      // Si no hay filtros/búsqueda, mostrar todos los productos paginados
+      if (!search && !talla && !onlyStock) {
+        filteredProducts = products.slice();
+      }
 
       currentPage = 1;
       renderProducts();
