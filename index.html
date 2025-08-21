@@ -107,29 +107,24 @@
       margin-bottom: 12px;
       letter-spacing: 1px;
     }
-    .controls {
+    .search-box {
       display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
       justify-content: center;
-      margin-bottom: 24px;
-      align-items: center;
+      margin-bottom: 32px;
+      margin-top: 8px;
     }
-    .controls input, .controls select {
-      padding: 8px 16px;
-      font-size: 1em;
-      border-radius: 7px;
+    .search-box input {
+      padding: 10px 20px;
+      font-size: 1.12em;
+      border-radius: 9px;
       border: 1px solid #bbb;
       outline: none;
-      min-width: 140px;
-      max-width: 340px;
+      min-width: 280px;
+      max-width: 400px;
       background: var(--light);
       color: var(--dark);
-      margin-left: 6px;
-    }
-    .controls label {
-      font-weight: bold;
-      color: #888;
+      box-shadow: 0 1px 8px #bfa76e22;
+      transition: border .2s;
     }
     .catalog-list {
       display: flex;
@@ -228,28 +223,6 @@
       background: #bbb;
       color: #fff;
       cursor: not-allowed;
-    }
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 28px 0 14px 0;
-      align-items: center;
-    }
-    .pagination button {
-      padding: 7px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--accent-dark);
-      background: var(--light);
-      color: var(--accent-dark);
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background .2s, color .2s;
-    }
-    .pagination button.active, .pagination button:hover {
-      background: var(--accent-dark);
-      color: #fff;
     }
     .cart-btn {
       position: fixed;
@@ -437,6 +410,7 @@
       .catalog-card { width: 99vw; max-width: 99vw; }
       .cart-modal { padding: 16px 5vw; }
       .controls { flex-direction: column; gap: 12px; align-items: stretch;}
+      .search-box input { min-width:140px; max-width:99vw;}
     }
   </style>
 </head>
@@ -468,20 +442,10 @@
   <section class="section" id="catalogo">
     <div class="container">
       <h1>Catálogo</h1>
-      <div class="controls">
-        <label for="buscador">Buscar referencia/talla:</label>
-        <input type="text" id="buscador" placeholder="Ej: Adidas, 41, Spiderman, etc">
-        <label for="stock-filter"><input type="checkbox" id="stock-filter" checked> Solo disponibles</label>
-        <label for="perpage">Por página: </label>
-        <select id="perpage">
-          <option value="12">12</option>
-          <option value="24">24</option>
-          <option value="36">36</option>
-          <option value="60">60</option>
-        </select>
+      <div class="search-box">
+        <input type="text" id="search-name" placeholder="Buscar por nombre de referencia...">
       </div>
       <div id="catalog-list" class="catalog-list"></div>
-      <div id="pagination" class="pagination"></div>
     </div>
   </section>
   <!-- CONTACTO -->
@@ -533,10 +497,6 @@
     let productsRaw = [];
     let catalogGrouped = [];
     let cart = [];
-
-    let currentPage = 1;
-    let perPage = 12;
-    let filteredCatalog = [];
 
     function toNumber(str) {
       if (!str) return 0;
@@ -597,41 +557,20 @@
       }));
 
       catalogGrouped = groupCatalog(productsRaw);
-      applyFilters();
-    }
-
-    // Filtros y búsqueda
-    function applyFilters() {
-      const search = document.getElementById('buscador').value.trim().toLowerCase();
-      const onlyStock = document.getElementById('stock-filter').checked;
-      perPage = parseInt(document.getElementById('perpage').value,10) || 12;
-
-      filteredCatalog = catalogGrouped.filter(group => {
-        let ok = true;
-        if (search) {
-          let refOk = group.ref.toLowerCase().includes(search);
-          let tallaOk = group.tallas.some(t => (t.talla+"").toLowerCase().includes(search));
-          ok = refOk || tallaOk;
-        }
-        if (onlyStock) {
-          ok = ok && group.tallas.some(t => t.qty > 0);
-        }
-        return ok;
-      });
-
-      if (!search && !onlyStock) filteredCatalog = catalogGrouped.slice();
-
-      currentPage = 1;
-      renderCatalog();
-      renderPagination();
+      renderCatalog(); // inicial
     }
 
     // Renderiza catálogo agrupado por referencia
-    function renderCatalog() {
-      const start = (currentPage-1)*perPage;
-      const end = start+perPage;
+    function renderCatalog(search = "") {
+      let filtered = catalogGrouped;
+      if(search && search.trim() !== "") {
+        let s = search.trim().toLowerCase();
+        filtered = catalogGrouped.filter(group =>
+          group.ref.toLowerCase().includes(s)
+        );
+      }
       let html = '';
-      filteredCatalog.slice(start,end).forEach(group => {
+      filtered.forEach(group => {
         let minP = Math.min(...group.prices.filter(p=>p));
         let maxP = Math.max(...group.prices.filter(p=>p));
         let precio = minP==maxP ? `$${minP}` : `$${minP} - $${maxP}`;
@@ -661,26 +600,7 @@
       document.getElementById('catalog-list').innerHTML = html || '<div style="color:#888;padding:36px;text-align:center;">No hay productos para mostrar.</div>';
     }
 
-    // Renderiza paginación
-    function renderPagination() {
-      const totalPages = Math.ceil(filteredCatalog.length / perPage);
-      if (totalPages <= 1) {
-        document.getElementById('pagination').innerHTML = '';
-        return;
-      }
-      let html = '';
-      for (let i = 1; i <= totalPages; i++) {
-        html += `<button ${i==currentPage?'class="active"':''} onclick="gotoPage(${i})">${i}</button>`;
-      }
-      document.getElementById('pagination').innerHTML = html;
-    }
-    window.gotoPage = function(page) {
-      currentPage = page;
-      renderCatalog();
-      renderPagination();
-    }
-
-    // Carrito y lógica
+    // Carrito y lógica (igual que antes)
     window.addToCart = function(ref, talla, price, img, e) {
       e.stopPropagation();
       let idx = cart.findIndex(item => item.ref == ref && item.talla == talla);
@@ -761,10 +681,10 @@
       document.getElementById('modal-bg').innerHTML = '';
     };
 
-    // Filtros y búsqueda
-    document.getElementById('buscador').addEventListener('input', applyFilters);
-    document.getElementById('stock-filter').addEventListener('change', applyFilters);
-    document.getElementById('perpage').addEventListener('change', applyFilters);
+    // Search por nombre de referencia
+    document.getElementById('search-name').addEventListener('input', function(e){
+      renderCatalog(e.target.value);
+    });
 
     loadCatalog();
   </script>
