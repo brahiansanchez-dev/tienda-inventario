@@ -498,8 +498,8 @@
       setActiveSection(['inicio','catalogo','contacto'].includes(hash)?hash:'inicio');
     });
 
-    // Inventario plano
-    const SHEET_JSON_URL = 'https://docs.google.com/spreadsheets/d/1qqZ3JCCaaCnLYnXsVDHXdKOaoqZMX5iB1YZEQ8s15Jk/gviz/tq?tqx=out:json&gid=1579516686';
+    // Inventario plano desde HTML de Google Sheets
+    const SHEET_HTML_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRNyUl65xMLTX1a-SiQZxsM3NZuFrYvuud2P2IHrabYNQLsWjVgO96MS8IHff_GxtZDk0kZITVdrS-N/pubhtml?gid=1579516686&single=true';
     const WHATSAPP_NUMBER = '573016846018';
 
     let productsRaw = [];
@@ -520,26 +520,39 @@
     }
 
     async function loadProducts() {
-      let res = await fetch(SHEET_JSON_URL);
+      let res = await fetch(SHEET_HTML_URL);
       let text = await res.text();
-      let json = JSON.parse(text.substr(47).slice(0, -2));
-      let cols = json.table.cols.map(c => c.label);
-      let rows = json.table.rows.map(row => {
+      let doc = document.createElement('div');
+      doc.innerHTML = text;
+
+      // Busca la tabla principal (puede ser la primera table)
+      let table = doc.querySelector('table');
+      if (!table) {
+        document.getElementById('product-list').innerHTML = '<div style="color:#888;padding:36px;text-align:center;">No se encontró la tabla de datos.</div>';
+        return;
+      }
+      let rows = Array.from(table.querySelectorAll('tr'));
+      if (rows.length < 2) {
+        document.getElementById('product-list').innerHTML = '<div style="color:#888;padding:36px;text-align:center;">No hay productos para mostrar.</div>';
+        return;
+      }
+      // Obtiene encabezados
+      let headers = Array.from(rows[0].querySelectorAll('th')).map(th => th.textContent.trim());
+      // Mapea filas
+      productsRaw = rows.slice(1).map(row => {
+        let cells = Array.from(row.querySelectorAll('td'));
         let obj = {};
-        row.c.forEach((cell, idx) => {
-          obj[cols[idx]] = cell ? cell.v : '';
+        headers.forEach((h, idx) => {
+          obj[h] = cells[idx] ? cells[idx].textContent.trim() : '';
         });
-        return obj;
+        return {
+          ref: obj['Referencia'] || '',
+          talla: obj['Talla'] || '',
+          qty: toNumber(obj['Cantidad actual']),
+          img: (obj['Imagen URL'] || '').trim(),
+          price: (obj['Precio'] || '').replace(/\$/g,'').replace('.','').replace(',','').trim(),
+        };
       });
-
-      productsRaw = rows.map(prod => ({
-        ref: prod['Referencia'] || '',
-        talla: prod['Talla'] || '',
-        qty: toNumber(prod['Cantidad actual']),
-        img: (prod['Imagen URL'] || '').trim(),
-        price: (prod['Precio'] || '').replace(/\$/g,'').replace('.','').replace(',','').trim(),
-      }));
-
       applyFilters(); // inicial
     }
 
