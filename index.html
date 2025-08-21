@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root {
-      --dark: #23232a;
-      --light: #fff;
-      --accent: #cf9f57;
-      --accent-dark: #b98e45;
+      --dark: #222228;
+      --light: #fdfdfd;
+      --accent: #bfa76e;
+      --accent-dark: #a88c48;
       --grey: #444;
-      --grey-light: #e6e6e6;
+      --grey-light: #e2e2e2;
       --card-shadow: 0 2px 14px #23232a22;
     }
     body {
@@ -23,12 +23,9 @@
     }
     .nav-bar {
       background: var(--dark);
-      box-shadow: 0 1px 16px #0002;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 0;
-      margin: 0;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -43,7 +40,6 @@
       font-weight: bold;
       text-decoration: none;
       font-size: 1.2em;
-      letter-spacing: 1px;
       transition: color .2s;
       position: relative;
       padding-bottom: 2px;
@@ -53,7 +49,7 @@
       color: var(--accent-dark);
       text-decoration: underline;
     }
-    .section { display: none; padding: 0; margin: 0; }
+    .section { display: none; padding: 0; margin: 0;}
     .section.active { display: block; }
     .container {
       max-width: 1200px;
@@ -64,7 +60,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 32px;
+      gap: 30px;
       margin-top: 40px;
       margin-bottom: 24px;
     }
@@ -157,7 +153,7 @@
       position: relative;
     }
     .catalog-card:hover {
-      box-shadow: 0 4px 24px #cf9f5755;
+      box-shadow: 0 4px 24px #bfa76e55;
     }
     .catalog-img {
       width: 220px;
@@ -291,7 +287,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: #23232a88;
+      background: #22222890;
       z-index: 999;
       display: flex;
       align-items: center;
@@ -437,7 +433,7 @@
       .container { padding: 10px; }
       .nav-menu { gap: 14px; font-size: .99em;}
       .hero-gallery { gap: 12px;}
-      .hero-img { width: 98vw; max-width: 98vw; height: 170px;}
+      .hero-img { width: 99vw; max-width: 99vw; height: 170px;}
       .catalog-card { width: 99vw; max-width: 99vw; }
       .cart-modal { padding: 16px 5vw; }
       .controls { flex-direction: column; gap: 12px; align-items: stretch;}
@@ -453,7 +449,6 @@
       <a href="https://wa.me/573016846018" target="_blank">Whatsapp</a>
     </div>
   </nav>
-
   <!-- INICIO -->
   <section class="section active" id="inicio">
     <div class="container home-hero">
@@ -469,7 +464,6 @@
       </div>
     </div>
   </section>
-
   <!-- CATÁLOGO agrupado por referencia -->
   <section class="section" id="catalogo">
     <div class="container">
@@ -490,7 +484,6 @@
       <div id="pagination" class="pagination"></div>
     </div>
   </section>
-
   <!-- CONTACTO -->
   <section class="section" id="contacto">
     <div class="container">
@@ -506,7 +499,6 @@
       </div>
     </div>
   </section>
-
   <button class="cart-btn" onclick="showCart()">
     🛒
     <span id="cart-count" class="cart-count" style="display:none">0</span>
@@ -534,7 +526,7 @@
       setActiveSection(['inicio','catalogo','contacto'].includes(hash)?hash:'inicio');
     });
 
-    // Datos y funciones de inventario agrupado
+    // Inventario agrupado
     const SHEET_JSON_URL = 'https://docs.google.com/spreadsheets/d/1qqZ3JCCaaCnLYnXsVDHXdKOaoqZMX5iB1YZEQ8s15Jk/gviz/tq?tqx=out:json&gid=1579516686';
     const WHATSAPP_NUMBER = '573016846018';
 
@@ -571,7 +563,6 @@
           });
         }
         let group = map.get(ref);
-        // Usar la primera imagen encontrada por referencia
         if (!group.img && prod.img) group.img = prod.img;
         group.prices.push(toPrice(prod.price));
         group.tallas.push({
@@ -617,20 +608,17 @@
 
       filteredCatalog = catalogGrouped.filter(group => {
         let ok = true;
-        // Filtro por referencia o talla
         if (search) {
           let refOk = group.ref.toLowerCase().includes(search);
           let tallaOk = group.tallas.some(t => (t.talla+"").toLowerCase().includes(search));
           ok = refOk || tallaOk;
         }
-        // Filtro por solo disponibles
         if (onlyStock) {
           ok = ok && group.tallas.some(t => t.qty > 0);
         }
         return ok;
       });
 
-      // Si no hay búsqueda ni filtro, mostrar todo
       if (!search && !onlyStock) filteredCatalog = catalogGrouped.slice();
 
       currentPage = 1;
@@ -644,7 +632,6 @@
       const end = start+perPage;
       let html = '';
       filteredCatalog.slice(start,end).forEach(group => {
-        // precio min y max
         let minP = Math.min(...group.prices.filter(p=>p));
         let maxP = Math.max(...group.prices.filter(p=>p));
         let precio = minP==maxP ? `$${minP}` : `$${minP} - $${maxP}`;
