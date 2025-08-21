@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tienda Online de Inventario</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      color: #222;
+    }
+    .container {
+      max-width: 1050px;
+      margin: auto;
+      padding: 24px;
+    }
+    h1 {
+      text-align: center;
+      color: #ff7f00;
+      font-size: 2.2em;
+      margin-bottom: 12px;
+    }
+    .product-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+    .product-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 14px #e0e0e0;
+      padding: 18px;
+      width: 255px;
+      cursor: pointer;
+      transition: box-shadow .2s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .product-card:hover {
+      box-shadow: 0 4px 24px #ffa94077;
+    }
+    .product-img {
+      width: 100%;
+      max-width: 180px;
+      max-height: 180px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      background: #fafafa;
+    }
+    .product-ref {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-bottom: 7px;
+      color: #ff7f00;
+      text-align: center;
+    }
+    .product-price {
+      color: #ff7f00;
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 1.02em;
+      text-align: center;
+    }
+    .product-qty {
+      color: #888;
+      margin-bottom: 6px;
+      font-size: .98em;
+      text-align: center;
+    }
+    .tallas-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .talla-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f4f4f4;
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin-bottom: 2px;
+    }
+    .talla-label {
+      color: #222;
+      font-size: 1em;
+      font-weight: bold;
+    }
+    .talla-stock {
+      color: #888;
+      font-size: .98em;
+      margin-left: 14px;
+    }
+    .add-cart-btn {
+      background: #ff7f00;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: .97em;
+      margin-left: 10px;
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      transition: background .2s;
+    }
+    .add-cart-btn:disabled {
+      background: #ccc;
+      color: #fff;
+      cursor: not-allowed;
+    }
+    .cart-btn {
+      position: fixed;
+      top: 22px;
+      right: 38px;
+      background: #ff7f00;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      font-size: 1.6em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #ff7f0022;
+      z-index: 20;
+      transition: background .2s;
+    }
+    .cart-count {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      background: #222;
+      color: #fff;
+      border-radius: 50%;
+      font-size: .86em;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    /* Modal carrito */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #22222266;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cart-modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px 26px 20px 26px;
+      min-width: 320px;
+      max-width: 95vw;
+      box-shadow: 0 3px 24px #ff7f0022;
+      position: relative;
+    }
+    .cart-title {
+      color: #ff7f00;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .cart-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fafafa;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 1em;
+      color: #222;
+    }
+    .cart-ref {
+      color: #ff7f00;
+      font-weight: bold;
+      font-size: 1.08em;
+    }
+    .cart-talla {
+      color: #222;
+      margin-left: 10px;
+    }
+    .cart-price {
+      color: #4caf50;
+      font-weight: bold;
+      margin-left: 18px;
+    }
+    .cart-remove-btn {
+      background: #888;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-size: .9em;
+      margin-left: 12px;
+      transition: background .2s;
+    }
+    .cart-remove-btn:hover { background: #ff7f00; }
+    .cart-total {
+      color: #222;
+      font-size: 1.13em;
+      font-weight: bold;
+      text-align: right;
+      margin-bottom: 18px;
+    }
+    .cart-actions {
+      text-align: center;
+    }
+    .cart-buy-btn {
+      background: #ff7f00;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 13px 36px;
+      cursor: pointer;
+      font-size: 1.15em;
+      font-family: 'Trebuchet MS', Arial, sans-serif;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      transition: background .2s;
+    }
+    .cart-buy-btn:disabled {
+      background: #ccc;
+      color: #fff;
+      cursor: not-allowed;
+    }
+    .cart-close-btn {
+      position: absolute;
+      top: 8px; right: 10px;
+      background: none;
+      border: none;
+      font-size: 1.8em;
+      color: #888;
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .cart-close-btn:hover { color: #ff7f00; }
+    /* Responsive */
+    @media (max-width: 700px) {
+      .product-card { width: 96vw; max-width: 96vw; }
+      .container { padding: 8px; }
+      .cart-modal { padding: 16px 5vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tienda Online de Inventario</h1>
+    <div id="products" class="product-list"></div>
+  </div>
+  <button class="cart-btn" onclick="showCart()">
+    🛒
+    <span id="cart-count" class="cart-count" style="display:none">0</span>
+  </button>
+  <div id="modal-bg" style="display:none"></div>
+  <script>
+    // El endpoint de tu Google Sheets
+    const SHEET_JSON_URL = 'https://docs.google.com/spreadsheets/d/1qqZ3JCCaaCnLYnXsVDHXdKOaoqZMX5iB1YZEQ8s15Jk/gviz/tq?tqx=out:json&gid=1579516686';
+    const WHATSAPP_NUMBER = '573016846018';
+
+    let productsByRef = {};
+    let cart = [];
+
+    function colorizeRefs() {
+      const refs = document.querySelectorAll('.product-ref');
+      refs.forEach(ref => ref.style.color = '#ff7f00');
+    }
+
+    async function loadProducts() {
+      let res = await fetch(SHEET_JSON_URL);
+      let text = await res.text();
+      let json = JSON.parse(text.substr(47).slice(0, -2));
+      let cols = json.table.cols.map(c => c.label);
+      let rows = json.table.rows.map(row => {
+        let obj = {};
+        row.c.forEach((cell, idx) => {
+          obj[cols[idx]] = cell ? cell.v : '';
+        });
+        return obj;
+      });
+
+      // Agrupar por referencia
+      productsByRef = {};
+      rows.forEach(prod => {
+        let ref = prod.Referencia || prod['Referencia'] || prod.ref || prod.nombre || '';
+        let talla = prod.Talla || prod['Talla'] || '';
+        let qty = prod.Cantidad || prod['Cantidad'] || prod.qty || prod.cantidad || 0;
+        let price = prod.Precio || prod['Precio'] || prod.price || prod.valor || '';
+        let img = prod.Imagen || prod['Imagen'] || prod.img || prod.imagen || '';
+        if (!productsByRef[ref]) {
+          productsByRef[ref] = {
+            ref,
+            img,
+            price,
+            tallas: []
+          };
+        }
+        productsByRef[ref].tallas.push({
+          talla,
+          qty: parseInt(qty),
+          price: parseFloat(price),
+        });
+      });
+
+      renderProducts();
+    }
+
+    function renderProducts() {
+      let html = '';
+      Object.values(productsByRef).forEach(prod => {
+        // Calcular cantidad total sumando todas las tallas
+        let totalQty = prod.tallas.reduce((sum, t) => sum + t.qty, 0);
+        html += `
+          <div class="product-card" onclick="showTallas('${encodeURIComponent(prod.ref)}')">
+            <img class="product-img" src="${prod.img}" alt="Imagen de ${prod.ref}">
+            <div class="product-ref">${prod.ref}</div>
+            <div class="product-price">Precio desde: $${prod.price}</div>
+            <div class="product-qty">Cantidad total: ${totalQty}</div>
+          </div>
+        `;
+      });
+      document.getElementById('products').innerHTML = html;
+      colorizeRefs();
+    }
+
+    // Mostrar tallas al hacer clic en referencia
+    window.showTallas = function(refEnc) {
+      let ref = decodeURIComponent(refEnc);
+      const prod = productsByRef[ref];
+      if (!prod) return;
+      // Modal tallas
+      let tallasHtml = prod.tallas.map(t => `
+        <div class="talla-row">
+          <span class="talla-label">Talla ${t.talla}</span>
+          <span class="talla-stock">Stock: ${t.qty}</span>
+          <span class="cart-price">$${t.price}</span>
+          <button class="add-cart-btn" ${t.qty <= 0 ? 'disabled' : ''} onclick="addToCart('${ref}', '${t.talla}', ${t.price}, '${prod.img}', event)">
+            Agregar
+          </button>
+        </div>
+      `).join('');
+      const modalHtml = `
+        <div class="modal-bg" onclick="closeModal(event)">
+          <div class="cart-modal" onclick="event.stopPropagation()">
+            <button class="cart-close-btn" onclick="closeModal(event)">×</button>
+            <div class="cart-title">${prod.ref}</div>
+            <img class="product-img" src="${prod.img}" alt="Imagen de ${prod.ref}" style="margin-bottom:18px;">
+            <div class="tallas-list">
+              ${tallasHtml}
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('modal-bg').innerHTML = modalHtml;
+      document.getElementById('modal-bg').style.display = 'flex';
+    };
+
+    window.closeModal = function(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('modal-bg').style.display = 'none';
+      document.getElementById('modal-bg').innerHTML = '';
+    };
+
+    window.addToCart = function(ref, talla, price, img, e) {
+      e.stopPropagation();
+      // Buscar stock actual
+      const prod = productsByRef[ref];
+      const tallaObj = prod.tallas.find(t => t.talla == talla);
+      if (tallaObj && tallaObj.qty > 0) {
+        // si ya existe en carrito, sumamos
+        let idx = cart.findIndex(item => item.ref == ref && item.talla == talla);
+        if (idx >= 0) {
+          if (cart[idx].qty < tallaObj.qty) {
+            cart[idx].qty += 1;
+          } else {
+            alert('No hay más stock disponible para esta talla.');
+            return;
+          }
+        } else {
+          cart.push({ ref, talla, price, img, qty: 1 });
+        }
+        updateCartCount();
+        document.getElementById('modal-bg').style.display = 'none';
+        document.getElementById('modal-bg').innerHTML = '';
+      }
+    };
+
+    function updateCartCount() {
+      let count = cart.reduce((sum, item) => sum + item.qty, 0);
+      let el = document.getElementById('cart-count');
+      el.textContent = count;
+      el.style.display = count > 0 ? 'block' : 'none';
+    }
+
+    window.showCart = function() {
+      let cartHtml = cart.length ? cart.map((item, idx) => `
+        <div class="cart-row">
+          <span class="cart-ref">${item.ref}</span>
+          <span class="cart-talla">Talla ${item.talla}</span>
+          <span class="cart-price">$${item.price}</span>
+          <span style="color:#888; margin-left:14px;">x${item.qty}</span>
+          <button class="cart-remove-btn" onclick="removeFromCart(${idx})">Quitar</button>
+        </div>
+      `).join('') : `<div style="color:#888; text-align:center;">El carrito está vacío.</div>`;
+      let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const modalHtml = `
+        <div class="modal-bg" onclick="closeModal(event)">
+          <div class="cart-modal" onclick="event.stopPropagation()">
+            <button class="cart-close-btn" onclick="closeModal(event)">×</button>
+            <div class="cart-title">Carrito de compras</div>
+            <div class="cart-list">
+              ${cartHtml}
+            </div>
+            <div class="cart-total">Total: $${total}</div>
+            <div class="cart-actions">
+              <button class="cart-buy-btn" ${cart.length == 0 ? 'disabled' : ''} onclick="buyCart()">Comprar por WhatsApp</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('modal-bg').innerHTML = modalHtml;
+      document.getElementById('modal-bg').style.display = 'flex';
+    }
+
+    window.removeFromCart = function(idx) {
+      cart.splice(idx, 1);
+      updateCartCount();
+      showCart();
+    };
+
+    window.buyCart = function() {
+      let msg = 'Hola, quiero comprar:\n';
+      cart.forEach(item => {
+        msg += `- ${item.ref}, Talla ${item.talla}, Precio: $${item.price}, Cantidad: ${item.qty}\n`;
+      });
+      let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      msg += `Total: $${total}`;
+      let url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    };
+
+    loadProducts();
+
+  </script>
+</body>
+</html>
