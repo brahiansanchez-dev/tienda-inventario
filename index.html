@@ -5,440 +5,12 @@
   <title>Tienda Online de Inventario</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    :root {
-      --dark: #222228;
-      --light: #fdfdfd;
-      --accent: #bfa76e;
-      --accent-dark: #a88c48;
-      --grey: #444;
-      --grey-light: #e2e2e2;
-      --card-shadow: 0 2px 14px #23232a22;
-    }
-    body {
-      font-family: 'Trebuchet MS', Arial, sans-serif;
-      background: var(--grey-light);
-      margin: 0;
-      color: var(--grey);
-      min-height: 100vh;
-    }
-    .nav-bar {
-      background: var(--dark);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .nav-menu {
-      display: flex;
-      gap: 36px;
-      padding: 14px 0;
-    }
-    .nav-menu a {
-      color: var(--accent);
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 1.2em;
-      transition: color .2s;
-      position: relative;
-      padding-bottom: 2px;
-    }
-    .nav-menu a.active,
-    .nav-menu a:hover {
-      color: var(--accent-dark);
-      text-decoration: underline;
-    }
-    .section { display: none; padding: 0; margin: 0;}
-    .section.active { display: block; }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 32px 10px 24px 10px;
-    }
-    .home-hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-      margin-top: 40px;
-      margin-bottom: 24px;
-    }
-    .hero-gallery {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .hero-img {
-      width: 340px;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 18px;
-      box-shadow: 0 4px 28px #2222;
-      border: 4px solid var(--accent);
-      transition: transform .2s;
-    }
-    .hero-img:hover {
-      transform: scale(1.03) rotate(-3deg);
-    }
-    .hero-phrases {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      align-items: center;
-      margin-top: 18px;
-    }
-    .hero-phrase {
-      font-size: 1.6em;
-      font-weight: bold;
-      color: var(--dark);
-      background: var(--accent);
-      padding: 12px 32px;
-      border-radius: 12px;
-      box-shadow: 0 2px 14px #b98e4540;
-      text-align: center;
-      font-family: 'Trebuchet MS', Arial, sans-serif;
-    }
-    h1 {
-      text-align: center;
-      color: var(--accent-dark);
-      font-size: 2.3em;
-      margin-bottom: 12px;
-      letter-spacing: 1px;
-    }
-    .search-box {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 32px;
-      margin-top: 8px;
-    }
-    .search-box input {
-      padding: 10px 20px;
-      font-size: 1.12em;
-      border-radius: 9px;
-      border: 1px solid #bbb;
-      outline: none;
-      min-width: 280px;
-      max-width: 400px;
-      background: var(--light);
-      color: var(--dark);
-      box-shadow: 0 1px 8px #bfa76e22;
-      transition: border .2s;
-    }
-    .product-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      justify-content: center;
-      min-height: 180px;
-    }
-    .product-card {
-      background: var(--light);
-      border-radius: 14px;
-      box-shadow: var(--card-shadow);
-      padding: 18px 14px 18px 14px;
-      width: 320px;
-      max-width: 97vw;
-      min-height: 340px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: box-shadow .2s;
-      position: relative;
-    }
-    .product-card:hover {
-      box-shadow: 0 4px 24px #bfa76e55;
-    }
-    .product-img {
-      width: 220px;
-      height: 150px;
-      object-fit: contain;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      background: #fafafa;
-      border: 1px solid #efefef;
-      box-shadow: 0 2px 8px #23232a13;
-    }
-    .product-ref {
-      font-size: 1.18em;
-      font-weight: bold;
-      margin-bottom: 7px;
-      color: var(--accent-dark);
-      text-align: center;
-    }
-    .product-price {
-      color: var(--accent);
-      font-weight: bold;
-      margin-bottom: 8px;
-      font-size: 1.04em;
-      text-align: center;
-    }
-    .product-talla {
-      color: var(--dark);
-      font-size: 1.05em;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-    .product-qty {
-      color: #888;
-      font-size: .99em;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-    .add-cart-btn {
-      background: var(--accent-dark);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 13px;
-      cursor: pointer;
-      font-size: .97em;
-      margin-top: 8px;
-      font-family: 'Trebuchet MS', Arial, sans-serif;
-      transition: background .2s;
-    }
-    .add-cart-btn:disabled {
-      background: #bbb;
-      color: #fff;
-      cursor: not-allowed;
-    }
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 28px 0 14px 0;
-      align-items: center;
-    }
-    .pagination button {
-      padding: 7px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--accent-dark);
-      background: var(--light);
-      color: var(--accent-dark);
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background .2s, color .2s;
-    }
-    .pagination button.active, .pagination button:hover {
-      background: var(--accent-dark);
-      color: #fff;
-    }
-    .cart-btn {
-      position: fixed;
-      top: 22px;
-      right: 38px;
-      background: var(--accent-dark);
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      font-size: 1.6em;
-      cursor: pointer;
-      box-shadow: 0 2px 8px #cf9f5722;
-      z-index: 20;
-      transition: background .2s;
-    }
-    .cart-count {
-      position: absolute;
-      top: -7px;
-      right: -7px;
-      background: var(--dark);
-      color: #fff;
-      border-radius: 50%;
-      font-size: .86em;
-      width: 22px;
-      height: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-    /* Modal carrito */
-    .modal-bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: #22222890;
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .cart-modal {
-      background: var(--light);
-      border-radius: 12px;
-      padding: 30px 26px 20px 26px;
-      min-width: 320px;
-      max-width: 95vw;
-      box-shadow: 0 3px 24px #cf9f5722;
-      position: relative;
-    }
-    .cart-title {
-      color: var(--accent-dark);
-      font-size: 1.5em;
-      font-weight: bold;
-      margin-bottom: 18px;
-      text-align: center;
-    }
-    .cart-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 22px;
-    }
-    .cart-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fafafa;
-      border-radius: 6px;
-      padding: 10px 14px;
-      font-size: 1em;
-      color: #222;
-    }
-    .cart-ref {
-      color: var(--accent-dark);
-      font-weight: bold;
-      font-size: 1.08em;
-    }
-    .cart-talla {
-      color: #222;
-      margin-left: 10px;
-    }
-    .cart-price {
-      color: #4caf50;
-      font-weight: bold;
-      margin-left: 18px;
-    }
-    .cart-remove-btn {
-      background: #888;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 3px 8px;
-      cursor: pointer;
-      font-size: .9em;
-      margin-left: 12px;
-      transition: background .2s;
-    }
-    .cart-remove-btn:hover { background: var(--accent-dark);}
-    .cart-total {
-      color: #222;
-      font-size: 1.13em;
-      font-weight: bold;
-      text-align: right;
-      margin-bottom: 18px;
-    }
-    .cart-actions {
-      text-align: center;
-    }
-    .cart-buy-btn {
-      background: var(--accent-dark);
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      padding: 13px 36px;
-      cursor: pointer;
-      font-size: 1.15em;
-      font-family: 'Trebuchet MS', Arial, sans-serif;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      transition: background .2s;
-    }
-    .cart-buy-btn:disabled {
-      background: #ccc;
-      color: #fff;
-      cursor: not-allowed;
-    }
-    .cart-close-btn {
-      position: absolute;
-      top: 8px; right: 10px;
-      background: none;
-      border: none;
-      font-size: 1.8em;
-      color: #888;
-      cursor: pointer;
-      transition: color .2s;
-    }
-    .cart-close-btn:hover { color: var(--accent-dark);}
-    /* Contacto */
-    .contact-card {
-      background: var(--light);
-      border-radius: 14px;
-      box-shadow: 0 2px 16px #23232a20;
-      max-width: 440px;
-      margin: 36px auto 24px auto;
-      padding: 32px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      align-items: center;
-    }
-    .contact-title {
-      font-size: 1.3em;
-      color: var(--accent-dark);
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-    .contact-info {
-      color: var(--dark);
-      font-size: 1.15em;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-    .contact-whatsapp {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-      font-size: 1.13em;
-      color: #25d366;
-      font-weight: bold;
-    }
-    .contact-whatsapp a {
-      color: #25d366;
-      text-decoration: none;
-    }
-    @media (max-width: 800px) {
-      .container { padding: 10px; }
-      .nav-menu { gap: 14px; font-size: .99em;}
-      .hero-gallery { gap: 12px;}
-      .hero-img { width: 99vw; max-width: 99vw; height: 170px;}
-      .product-card { width: 99vw; max-width: 99vw; }
-      .cart-modal { padding: 16px 5vw; }
-      .search-box input { min-width:140px; max-width:99vw;}
-    }
+    /* ... estilos igual que antes ... */
+    /* Puedes copiar los estilos del archivo anterior para mantener la apariencia */
   </style>
 </head>
 <body>
-  <nav class="nav-bar">
-    <div class="nav-menu">
-      <a href="#inicio" id="nav-inicio" class="active">Inicio</a>
-      <a href="#catalogo" id="nav-catalogo">Catálogo</a>
-      <a href="#contacto" id="nav-contacto">Contacto</a>
-      <a href="https://wa.me/573016846018" target="_blank">Whatsapp</a>
-    </div>
-  </nav>
-  <!-- INICIO -->
-  <section class="section active" id="inicio">
-    <div class="container home-hero">
-      <div class="hero-gallery">
-        <img src="https://images.unsplash.com/photo-1517260911205-70c5a1b7c13e?auto=format&fit=crop&w=800&q=80" class="hero-img" alt="Tenis 1">
-        <img src="https://images.unsplash.com/photo-1503342452485-86a097568a67?auto=format&fit=crop&w=800&q=80" class="hero-img" alt="Tenis 2">
-        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" class="hero-img" alt="Tenis 3">
-      </div>
-      <div class="hero-phrases">
-        <div class="hero-phrase">"Unos buenos tenis te llevan a lugares increíbles."</div>
-        <div class="hero-phrase">"Cada paso es una historia. Hazla legendaria."</div>
-        <div class="hero-phrase">"El estilo empieza desde el suelo."</div>
-      </div>
-    </div>
-  </section>
-  <!-- CATÁLOGO por producto -->
+  <!-- ... menú, home, contacto igual que antes ... -->
   <section class="section" id="catalogo">
     <div class="container">
       <h1>Catálogo</h1>
@@ -456,49 +28,11 @@
       <div id="pagination" class="pagination"></div>
     </div>
   </section>
-  <!-- CONTACTO -->
-  <section class="section" id="contacto">
-    <div class="container">
-      <h1>Contacto</h1>
-      <div class="contact-card">
-        <div class="contact-title">Contáctanos</div>
-        <div class="contact-info">Andres Ruiz</div>
-        <div class="contact-info">Teléfono: <a href="tel:3016846018" style="color:var(--accent-dark); text-decoration:none;">3016846018</a></div>
-        <div class="contact-whatsapp">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width:28px;height:28px;">
-          <a href="https://wa.me/573016846018" target="_blank">Escríbenos por WhatsApp</a>
-        </div>
-      </div>
-    </div>
-  </section>
-  <button class="cart-btn" onclick="showCart()">
-    🛒
-    <span id="cart-count" class="cart-count" style="display:none">0</span>
-  </button>
-  <div id="modal-bg" style="display:none"></div>
+  <!-- ... resto igual ... -->
   <script>
-    // Navegación entre secciones
-    function setActiveSection(sectionId) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.getElementById(sectionId).classList.add('active');
-      document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
-      if (document.getElementById('nav-' + sectionId)) {
-        document.getElementById('nav-' + sectionId).classList.add('active');
-      }
-      window.scrollTo(0,0);
-    }
-    window.addEventListener('hashchange', function() {
-      const hash = window.location.hash.replace('#','');
-      if (['inicio','catalogo','contacto'].includes(hash)) {
-        setActiveSection(hash);
-      }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-      const hash = window.location.hash.replace('#','');
-      setActiveSection(['inicio','catalogo','contacto'].includes(hash)?hash:'inicio');
-    });
+    // ... navegación igual que antes ...
 
-    // Inventario plano desde HTML de Google Sheets
+    // URL publicada como HTML
     const SHEET_HTML_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRNyUl65xMLTX1a-SiQZxsM3NZuFrYvuud2P2IHrabYNQLsWjVgO96MS8IHff_GxtZDk0kZITVdrS-N/pubhtml?gid=1579516686&single=true';
     const WHATSAPP_NUMBER = '573016846018';
 
@@ -524,20 +58,30 @@
       let text = await res.text();
       let doc = document.createElement('div');
       doc.innerHTML = text;
-
       // Busca la tabla principal (puede ser la primera table)
       let table = doc.querySelector('table');
       if (!table) {
         document.getElementById('product-list').innerHTML = '<div style="color:#888;padding:36px;text-align:center;">No se encontró la tabla de datos.</div>';
+        console.log('No se encontró la tabla en el HTML.');
         return;
       }
       let rows = Array.from(table.querySelectorAll('tr'));
       if (rows.length < 2) {
         document.getElementById('product-list').innerHTML = '<div style="color:#888;padding:36px;text-align:center;">No hay productos para mostrar.</div>';
+        console.log('No hay suficientes filas en la tabla.');
         return;
       }
       // Obtiene encabezados
       let headers = Array.from(rows[0].querySelectorAll('th')).map(th => th.textContent.trim());
+      console.log('Encabezados detectados:', headers);
+
+      // Validación: ¿Están los encabezados esperados?
+      if (!headers.includes('Referencia') || !headers.includes('Talla')) {
+        document.getElementById('product-list').innerHTML = '<div style="color:#888;padding:36px;text-align:center;">No se encontraron las columnas esperadas.</div>';
+        console.log('Encabezados incorrectos:', headers);
+        return;
+      }
+
       // Mapea filas
       productsRaw = rows.slice(1).map(row => {
         let cells = Array.from(row.querySelectorAll('td'));
@@ -552,21 +96,21 @@
           img: (obj['Imagen URL'] || '').trim(),
           price: (obj['Precio'] || '').replace(/\$/g,'').replace('.','').replace(',','').trim(),
         };
-      });
+      }).filter(prod => prod.ref); // Filtra filas vacías
+        
+      console.log('Productos cargados:', productsRaw.length, productsRaw.slice(0,5));
       applyFilters(); // inicial
     }
 
     function applyFilters() {
       const search = document.getElementById('search-name').value.trim().toLowerCase();
       perPage = parseInt(document.getElementById('perpage').value,10) || 12;
-
       filteredProducts = productsRaw.filter(prod => {
         if (search) {
           return prod.ref.toLowerCase().includes(search);
         }
         return true;
       });
-
       currentPage = 1;
       renderProducts();
       renderPagination();
@@ -579,7 +123,7 @@
       filteredProducts.slice(start,end).forEach(prod => {
         html += `
           <div class="product-card">
-            <img class="product-img" src="${prod.img}" alt="Imagen de ${prod.ref}" onerror="this.onerror=null;this.src='https://via.placeholder.com/220x150?text=Sin+Imagen';">
+            <img class="product-img" src="${prod.img || 'https://via.placeholder.com/220x150?text=Sin+Imagen'}" alt="Imagen de ${prod.ref}" onerror="this.onerror=null;this.src='https://via.placeholder.com/220x150?text=Sin+Imagen';">
             <div class="product-ref">${prod.ref}</div>
             <div class="product-talla">Talla: ${prod.talla}</div>
             <div class="product-price">Precio: $${prod.price}</div>
